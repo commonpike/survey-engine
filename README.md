@@ -1,7 +1,7 @@
 # surveyengine
 
 Install this on a webserver, create a database
-and import survey-engine.sql. That gives you
+and import survey.sql. That gives you
 a survey with 
 
 *8 fields*, 

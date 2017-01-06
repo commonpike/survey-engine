@@ -167,27 +167,37 @@
 				if ($request['bogus']) {
 					$html .= '<input type="hidden" name="bogus" value="1">';
 				}
-				foreach($survey->fields as $key=>$field) {
-					$html .= '<label>'.$field->label.'</label>';
-					$html .= '<input type="text" name="'.$key.'">';
-				}
-				foreach($survey->categories as $key=>$cat) {
-					$html .= '<label>'.$cat->label.'</label>';
-					$html .= '<select name="'.$key.'">';
-					$html.= '<option value="">Select...</option>';
-					foreach($cat->options as $val=>$option) {
-						$html.= '<option value="'.$val.'">'.$option.'</option>';
+				
+				if (count((array)$survey->fields)) {
+					$html .= '<h3>Fields</h3>';
+					foreach($survey->fields as $key=>$field) {
+						$html .= '<label>'.$field->label.'</label>';
+						$html .= '<input type="text" name="'.$key.'">';
 					}
-					$html .= '</select>';
 				}
 				
-				$html .= '<h3>Statements</h3>';
-				foreach($survey->statements as $key=>$stat) {
-					$html .= '<label>'.$stat->label.'</label>';
-					foreach($survey->positions as $val=>$pos) {
-						$html.= '<input type="radio" name="'.$key.'" value="'.$val.'">'.$pos.'</option>';
+				if (count((array)$survey->categories)) {
+					$html .= '<h3>Categories</h3>';
+					foreach($survey->categories as $key=>$cat) {
+						$html .= '<label>'.$cat->label.'</label>';
+						$html .= '<select name="'.$key.'">';
+						$html.= '<option value="">Select...</option>';
+						foreach($cat->options as $val=>$option) {
+							$html.= '<option value="'.$val.'">'.$option.'</option>';
+						}
+						$html .= '</select>';
 					}
-					
+				}
+				
+				if (count((array)$survey->statements)) {
+					$html .= '<h3>Statements</h3>';
+					foreach($survey->statements as $key=>$stat) {
+						$html .= '<label>'.$stat->label.'</label>';
+						foreach($survey->positions as $val=>$pos) {
+							$html.= '<input type="radio" name="'.$key.'" value="'.$val.'">'.$pos.'</option>';
+						}
+						
+					}
 				}
 				$html .= '<br><br><input type="submit" value="submit">';
 				$html .= '</form>';
@@ -292,7 +302,7 @@
 						$csv = "";
 						$numpos = count((array)$survey->positions);
 						
-						$csv .= 'survey results dd '.date('Y/m/d');
+						$csv .= '"survey results dd '.date('Y/m/d').'"';
 						$csv .= "\n\n";
 							
 						// loop categories
@@ -304,42 +314,57 @@
 							$csv .= "\n";
 								$csv .= '""';
 								foreach ($cat->options as $val=>$label) {
-									$csv .= ',"'.$label.' ['.$survey->results['categories'][$ckey][$val]['total'].']"';
+									$csv .= ',"'.$label.'"';
 									for ($cc=0;$cc<$numpos;$cc++) {
 										$csv .= ',""';
 									}
 								}
-							
-							// header row for all positions
-							$csv .= "\n";
-								$csv .= '""';
-								foreach ($cat->options as $val=>$opt) {
-									//$csv .= ',"Total"';
-									foreach ($survey->positions as $pkey=>$label) {
-										$csv .= ',"'.$label.'"';
-									}
-									$csv .= ',""';
-								}
-							$csv .= "\n";
-							
-							// loop all statements
-							foreach ($survey->results["statements"] as $stkey=>$stres) {
 								
-								$csv .= '"'.$survey->statements->{$stkey}->label.'"';
-								foreach ($cat->options as $val=>$opt) {
-									if ($stres['categories'][$ckey][$val]) {
-										$total = $stres['categories'][$ckey][$val]['total'];
-										//$csv .= ',"'.$total.'"';
-										foreach ($survey->positions as $pkey=>$label) {
-											$count = $stres['categories'][$ckey][$val]['positions'][$pkey];
-											if ($count) $pct = round(100*$count/$total);
-											else $pct = 0;
-											$csv .= ',"'.$pct.'%"';
-										}
+							// header row cat stats
+							$csv .= "\n";
+								$cattotal = $survey->results['categories'][$ckey]['total'];
+								$csv .= '""';
+								foreach ($cat->options as $val=>$label) {
+									$catopttotal = $survey->results['categories'][$ckey][$val]['total'];
+									$catoptpct = round($catopttotal/$cattotal*100);
+									$csv .= ',"Total: '.$catopttotal.' ('.$catoptpct.'%)"';
+									for ($cc=0;$cc<$numpos;$cc++) {
 										$csv .= ',""';
 									}
 								}
+	
+							if (count((array)$survey->statements)) {
+								// header row for all positions
 								$csv .= "\n";
+									$csv .= '""';
+									foreach ($cat->options as $val=>$opt) {
+										//$csv .= ',"Total"';
+										foreach ($survey->positions as $pkey=>$label) {
+											$csv .= ',"'.$label.'"';
+										}
+										$csv .= ',""';
+									}
+								$csv .= "\n";
+								
+								// loop all statements
+								foreach ($survey->results["statements"] as $stkey=>$stres) {
+									
+									$csv .= '"'.$survey->statements->{$stkey}->label.'"';
+									foreach ($cat->options as $val=>$opt) {
+										if ($stres['categories'][$ckey][$val]) {
+											$total = $stres['categories'][$ckey][$val]['total'];
+											//$csv .= ',"'.$total.'"';
+											foreach ($survey->positions as $pkey=>$label) {
+												$count = $stres['categories'][$ckey][$val]['positions'][$pkey];
+												if ($count) $pct = round(100*$count/$total);
+												else $pct = 0;
+												$csv .= ',"'.$pct.'%"';
+											}
+											$csv .= ',""';
+										}
+									}
+									$csv .= "\n";
+								}
 							}
 							$csv .= "\n\n";
 						}
@@ -354,7 +379,7 @@
 						//print '<xmp>';var_dump($survey->results);print '</xmp>';
 						
 						$html = '<h2>survey results dd '.date('Y/m/d').' ['.$survey->results['total'].']</h2>';
-						$numpos = count((array)$survey->positions);
+						$numpos = min(count((array)$survey->positions),1);
 						
 						// loop categories
 						foreach ($survey->categories as $ckey=>$cat) {
@@ -365,38 +390,51 @@
 								$html .= '<tr>';
 									$html .= '<th><!--stat--></th>';
 									foreach ($cat->options as $val=>$label) {
-										$html .= '<th colspan="'.($numpos).'">'.$label.' ['.$survey->results['categories'][$ckey][$val]['total'].']</th>';
+										$html .= '<th colspan="'.($numpos).'">'.$label.'</th>';
+									}
+								$html .= '</tr>';
+								
+								// header row cat stats
+								$html .= '<tr>';
+									$cattotal = $survey->results['categories'][$ckey]['total'];
+									$html .= '<th>Total: '.$cattotal.'</th>';
+									foreach ($cat->options as $val=>$label) {
+										$catopttotal = $survey->results['categories'][$ckey][$val]['total'];
+										$catoptpct = round($catopttotal/$cattotal*100);
+										$html .= '<th colspan="'.($numpos).'">'.$catopttotal.' ('.$catoptpct.'%)</th>';
 									}
 								$html .= '</tr>';
 								
 								// header row positions
-								$html .= '<tr>';
-									$html .= '<th><!--stat--></th>';
-									foreach ($cat->options as $val=>$opt) {
-										//$html .= '<th><small>Total</small></th>';
-										foreach ($survey->positions as $pkey=>$label) {
-											$html .= '<th title="'.$label.'"><small>'.substr($label,0,5).'..</small></th>';
-										}
-									}
-								$html .= '</tr>';
-								
-								// row for each statement
-								foreach ($survey->results["statements"] as $stkey=>$stres) {
+								if (count((array)$survey->statements)) {
 									$html .= '<tr>';
-										$html .= '<th>'.$survey->statements->{$stkey}->label.'</th>';
+										$html .= '<th><!--stat--></th>';
 										foreach ($cat->options as $val=>$opt) {
-											if ($stres['categories'][$ckey][$val]) {
-												$total = $stres['categories'][$ckey][$val]['total'];
-												//$html .= '<td>'.$total.'</td>';
-												foreach ($survey->positions as $pkey=>$label) {
-													$count = $stres['categories'][$ckey][$val]['positions'][$pkey];
-													if ($count) $pct = round(100*$count/$total);
-													else $pct =0;
-													$html .= '<td>'.$pct.'%</td>';
-												}
+											//$html .= '<th><small>Total</small></th>';
+											foreach ($survey->positions as $pkey=>$label) {
+												$html .= '<th title="'.$label.'"><small>'.substr($label,0,5).'..</small></th>';
 											}
 										}
 									$html .= '</tr>';
+									
+									// row for each statement
+									foreach ($survey->results["statements"] as $stkey=>$stres) {
+										$html .= '<tr>';
+											$html .= '<th>'.$survey->statements->{$stkey}->label.'</th>';
+											foreach ($cat->options as $val=>$opt) {
+												if ($stres['categories'][$ckey][$val]) {
+													$total = $stres['categories'][$ckey][$val]['total'];
+													//$html .= '<td>'.$total.'</td>';
+													foreach ($survey->positions as $pkey=>$label) {
+														$count = $stres['categories'][$ckey][$val]['positions'][$pkey];
+														if ($count) $pct = round(100*$count/$total);
+														else $pct =0;
+														$html .= '<td>'.$pct.'%</td>';
+													}
+												}
+											}
+										$html .= '</tr>';
+									}
 								}
 							$html .= '</table>';
 						}
@@ -666,7 +704,7 @@
 			case 'csv':
 				$stamp = date('Ymd');
 				header('Content-Type: text/csv; charset=utf-8');
-				header("Content-Disposition: attachment; filename=votematch-survey-$stamp.csv");
+				header("Content-Disposition: attachment; filename=survey-engine-$stamp.csv");
 				print $result['csv'];
 				break;
 			case 'html':
