@@ -1,0 +1,196 @@
+{
+	"fields"	: {
+		"email"	: {
+			"column"	: "field01",
+			"label"		: "E-mail"
+		}
+	},
+	"categories": {
+		"age"	: {
+			"column"	: "cat01",
+			"label"		: "Age",
+			"options"	: {
+				"1"		: "moins de 18 ans",
+				"2"		: "18 ans -35 ans",
+				"3"		: "36 ans- 45 ans",
+				"4"		: "46 ans- 60 ans",
+				"5"		: "Plus de 60 ans"
+			}
+		},
+		"gender"	: {
+			"column"	: "cat02",
+			"label"		: "Sexe",
+			"options"	: {
+				"0"		: "Undefined",
+				"1"		: "Homme",
+				"2"		: "Femme"
+			}
+		},
+		"education"	: {
+			"column"	: "cat03",
+			"label"		: "Education",
+			"options"	: {
+				"0"		: "No education",
+				"1"		: "Niveau primaire",
+				"2"		: "Niveau collège",
+				"3"		: "Niveau lycée",
+				"4"		: "Niveau supérieur"
+			}
+		},
+		"residence"	: {
+			"column"	: "cat04",
+			"label"		: "Lieu de résidence",
+			"options"	: {
+				"1"		: "Ville",
+				"2"		: "Campagne"
+			}
+		},
+		"province"	: {
+			"column"	: "cat05",
+			"label"		: "Provinces",
+			"options"	: {
+				"1"		: "Tanger-Tétouan",
+				"2"		: "L'Oriental",
+				"3"		: "Fès-Meknès",
+				"4"		: "Rabat-Salé-Kénitra",
+				"5"		: "Béni Mellal-Khénifra",
+				"6"		: "Grand Casablanca-Settat",
+				"7"		: "Marrakech-Safi",
+				"8"		: "Drâa-Tafilalet",
+				"9"		: "Sous-Massa",
+				"10"	: "Guelmim-Oued Noun",
+				"11"	: "Laâyoune",
+				"12"	: "Dakhla"
+			}
+		}
+	},
+	"statements": {
+		"s2390"	:	{
+			"column"	: "pos01",
+			"label"		: "Statement 01"
+		},
+		"s2391"	:	{
+			"column"	: "pos02",
+			"label"		: "Statement 02"
+		},
+		"s2392"	:	{
+			"column"	: "pos03",
+			"label"		: "Statement 03"
+		},
+		"s2393"	:	{
+			"column"	: "pos04",
+			"label"		: "Statement 04"
+		},
+		"s2394"	:	{
+			"column"	: "pos05",
+			"label"		: "Statement 05"
+		},
+		"s2395"	:	{
+			"column"	: "pos06",
+			"label"		: "Statement 06"
+		},
+		"p7"	:	{
+			"column"	: "pos07",
+			"label"		: "Statement 07"
+		},
+		"p8"	:	{
+			"column"	: "pos08",
+			"label"		: "Statement 08"
+		},
+		"p9"	:	{
+			"column"	: "pos09",
+			"label"		: "Statement 09"
+		},
+		"p10"	:	{
+			"column"	: "pos10",
+			"label"		: "Statement 10"
+		},
+		"p11"	:	{
+			"column"	: "pos11",
+			"label"		: "Statement 11"
+		},
+		"p12"	:	{
+			"column"	: "pos12",
+			"label"		: "Statement 12"
+		},
+		"p13"	:	{
+			"column"	: "pos13",
+			"label"		: "Statement 13"
+		},
+		"p14"	:	{
+			"column"	: "pos14",
+			"label"		: "Statement 14"
+		},
+		"p15"	:	{
+			"column"	: "pos15",
+			"label"		: "Statement 15"
+		},
+		"p16"	:	{
+			"column"	: "pos16",
+			"label"		: "Statement 16"
+		},
+		"p17"	:	{
+			"column"	: "pos17",
+			"label"		: "Statement 17"
+		},
+		"p18"	:	{
+			"column"	: "pos18",
+			"label"		: "Statement 18"
+		},
+		"p19"	:	{
+			"column"	: "pos19",
+			"label"		: "Statement 19"
+		},
+		"p20"	:	{
+			"column"	: "pos20",
+			"label"		: "Statement 20"
+		},
+		"p21"	:	{
+			"column"	: "pos21",
+			"label"		: "Statement 21"
+		},
+		"p22"	:	{
+			"column"	: "pos22",
+			"label"		: "Statement 22"
+		},
+		"p23"	:	{
+			"column"	: "pos23",
+			"label"		: "Statement 23"
+		},
+		"p24"	:	{
+			"column"	: "pos24",
+			"label"		: "Statement 24"
+		},
+		"p25"	:	{
+			"column"	: "pos25",
+			"label"		: "Statement 25"
+		},
+		"p26"	:	{
+			"column"	: "pos26",
+			"label"		: "Statement 26"
+		},
+		"p27"	:	{
+			"column"	: "pos27",
+			"label"		: "Statement 27"
+		},
+		"p28"	:	{
+			"column"	: "pos28",
+			"label"		: "Statement 28"
+		},
+		"p29"	:	{
+			"column"	: "pos29",
+			"label"		: "Statement 29"
+		},
+		"p30"	:	{
+			"column"	: "pos30",
+			"label"		: "Statement 30"
+		}
+		
+	},
+	"positions": {
+		"-1"	: "Pas d'accord",
+		"0"		: "Passer cette question",
+		"1"		: "D'accord",
+		"2"		: "Indifférent"
+	}
+}
