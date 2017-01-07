@@ -16,7 +16,7 @@ like 'age' : '16-32'
 which can each have one of a number of predefined 'positions'
 like 'I like strawberry' : 'yes', 'I like applepie' : 'no'
 
-==setup==
+##set it up
 Edit survey.json.dist to fill out your 
 fields, categories and statements.
 the 'column' names should match the 
@@ -28,7 +28,7 @@ an admin password and the database
 credentials. when done, move it 
 to config.php
 
-==test it==
+##test it
 Now open survey.php in your browser. it
 prints html results by default, but it
 can export results in csv or json,
@@ -40,7 +40,7 @@ You can submit new entries using GET
 requests and get a result in a variety
 of formats, including json.
 
-==go live==
+##go live
 Once you are ready to go live, turn
 $config->testing to false in config.php.
 
