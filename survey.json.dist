@@ -188,7 +188,7 @@
 		
 	},
 	"positions": {
-		"-1"	: "Pas d'accord",
+		"-1"	: "Pas d'accord", 
 		"0"		: "Passer cette question",
 		"1"		: "D'accord",
 		"2"		: "Indifférent"
