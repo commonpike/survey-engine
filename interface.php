@@ -76,27 +76,27 @@
 	<body>
 		<h1>Survey Engine</h1>
 		
-		<form action="survey.php">
+		<form action="<?php echo $_SERVER['PHP_SELF'] ?>">
 			<input type="hidden" name="action" value="results">
 			<input type="hidden" name="format" value="html">
 			<input type="submit" value="results (html)">
 		</form>
-		<form action="survey.php" target="results">
+		<form action="<?php echo $_SERVER['PHP_SELF'] ?>" target="results">
 			<input type="hidden" name="action" value="results">
 			<input type="hidden" name="format" value="csv">
 			<input type="submit" value="results (csv)">
 		</form>
-		<form action="survey.php" target="results">
+		<form action="<?php echo $_SERVER['PHP_SELF'] ?>" target="results">
 			<input type="hidden" name="action" value="results">
 			<input type="hidden" name="format" value="json">
 			<input type="submit" value="results (json)">
 		</form>
-		<form action="survey.php">
+		<form action="<?php echo $_SERVER['PHP_SELF'] ?>">
 			<input type="hidden" name="action" value="form">
 			<input type="hidden" name="format" value="html">
 			<input type="submit" value="form">
 		</form>
-		<form action="survey.php">
+		<form action="<?php echo $_SERVER['PHP_SELF'] ?>">
 			<input type="hidden" name="action" value="clear">
 			<input type="hidden" name="format" value="html">
 			<input type="submit" value="clear database ..">
