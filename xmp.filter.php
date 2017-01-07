@@ -1,6 +1,6 @@
 <?php
 
-	// this trik allows you to use
+	// this trick allows you to use
 	// the same survey for several clients:
 	// set up a category called 'client'
 	// in survey.json and enter the details here
