@@ -150,8 +150,8 @@
 	
 	// find filtercol if any
 	if ($request['filtercat']) {
-		$result['filtercol']	= $survey->categories->{$request['filtercat']}->column;
-		if (!$result['filtercol']) {
+		$request['filtercol']	= $survey->categories->{$request['filtercat']}->column;
+		if (!$request['filtercol']) {
 			failure(6,"Can not find filter column for " . $request['filtercat']);
 		}
 	}
@@ -236,7 +236,7 @@
 		
 					// check if this ip has recently submitted .. 
 					$query = 'DELETE FROM survey ';
-					if ($request['filtercat']) $query .= ' WHERE '.$result['filtercol'].'='.$request['filterval'];
+					if ($request['filtercat']) $query .= ' WHERE '.$request['filtercol'].'='.$request['filterval'];
 					
 					$res = $mysqli->query($query) or die(mysqli_error());
 					
@@ -381,7 +381,8 @@
 									$csv .= '""';
 									foreach ($cat->options as $val=>$label) {
 										$catopttotal = $survey->results['categories'][$ckey][$val]['total'];
-										$catoptpct = round($catopttotal/$cattotal*100);
+										if ($cattotal) $catoptpct = round($catopttotal/$cattotal*100);
+										else $catoptpct  =0;
 										$csv .= ',"Total: '.$catopttotal.' ('.$catoptpct.'%)"';
 										for ($cc=0;$cc<$numpos;$cc++) {
 											$csv .= ',""';
@@ -422,6 +423,18 @@
 									}
 								}
 								$csv .= "\n\n";
+							} else {
+							
+							
+								$csv .= '"Filtered by: '.$cat->label;
+								
+								// header row for all cat opts
+								$csv .= "\n";
+									$csv .= '""';
+									$csv .= $survey->categories->{$request['filtercat']}->label.': ';
+									$csv .= $survey->categories->{$request['filtercat']}->options->{$request['filterval']};
+									$csv .= ' ['.$survey->results['categories'][$request['filtercat']]['total'].']';
+									$csv .= "\n\n";
 							}
 						}
 						
@@ -499,12 +512,12 @@
 								$html .= '</table>';
 							} else {
 						
-								//$html .= '<table border="1" width="100%">';
-								//$html .= '<caption>';
-								//$html .= $survey->categories->{$request['filtercat']}->label.': ';
-								//$html .= $survey->categories->{$request['filtercat']}->options->{$request['filterval']};
-								//$html .= ' ['.$survey->results['categories'][$request['filtercat']]['total'].']</caption>';
-								//$html .= '</table>';
+								$html .= '<table border="1" width="100%">';
+								$html .= '<caption> Filtered by ';
+								$html .= $survey->categories->{$request['filtercat']}->label.': ';
+								$html .= $survey->categories->{$request['filtercat']}->options->{$request['filterval']};
+								$html .= ' ['.$survey->results['categories'][$request['filtercat']]['total'].']</caption>';
+								$html .= '</table>';
 							}
 						}  
 						
@@ -623,7 +636,7 @@
 		// totals
 		$query = 'SELECT count(*) as count FROM survey WHERE true ';
 		if (!$request['bogus']) $query .= ' AND NOT(bogus) ';
-		if ($request['filtercat']) $query .= ' AND '.$result['filtercol'].'="'.$request['filterval'].'" ';
+		if ($request['filtercat']) $query .= ' AND '.$request['filtercol'].'="'.$request['filterval'].'" ';
 		if ($res = $mysqli->query($query) or die(mysqli_error())) {
 			while($row = $res->fetch_assoc()) {
 				$survey->results["total"]=$row['count'];
@@ -639,7 +652,7 @@
 			$query .= 'count(*) as count FROM survey ';
 			$query .= ' WHERE '.$cat->column.' IS NOT NULL ';
 			if (!$request['bogus']) $query .= ' AND NOT(bogus) ';
-			if ($request['filtercat']) $query .= ' AND '.$result['filtercol'].'="'.$request['filterval'].'" ';
+			if ($request['filtercat']) $query .= ' AND '.$request['filtercol'].'="'.$request['filterval'].'" ';
 			$query .= 'GROUP BY '.$cat->column;
 			
 			//print '<hr>';
@@ -683,7 +696,7 @@
 				$query .= 'count(*) as count FROM survey ';
 				$query .= ' WHERE '.$cat->column.' IS NOT NULL ';
 				if (!$request['bogus']) $query .= ' AND NOT(bogus) ';
-				if ($request['filtercat']) $query .= ' AND '.$result['filtercol'].'="'.$request['filterval'].'" ';
+				if ($request['filtercat']) $query .= ' AND '.$request['filtercol'].'="'.$request['filterval'].'" ';
 				$query .= 'GROUP BY '.$cat->column.','.$stat->column;
 			
 				//print '<hr>';
