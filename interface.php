@@ -31,6 +31,7 @@
 		</style>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script>
+		
 			var vrndtxt = '', vrndval = 0;
 			function rndtxt() {
 				if (vrndtxt) return vrndtxt;
@@ -58,7 +59,7 @@
 					$(this).val(rndtxt());
 				});
 				$('select',form).each(function() {
-					var max = $('option',this).size();
+					var max = $('option',this).length;
 					$('option',this).get(rndval(max)).selected=true;
 				});
 				$('input[type="radio"]',form).data('grouped',false);

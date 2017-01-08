@@ -160,17 +160,18 @@
 	
 	function main() {
 		
-		global $request,$result,$survey,$mysqli;
+		global $config,$request,$result,$survey,$mysqli;
 		
 		switch($request['action']) {
 		
 			case "test" :
+				require_login();
 				$result['survey']=&$survey;
 				success();
 				break;
 				
 			case "form" :
-			
+				require_login();
 				$html = '<form action="'.$_SERVER['PHP_SELF'].'" method="get">';
 				$html .= '<input type="hidden" name="action" value="submit">';
 				$html .= '<input type="hidden" name="format" value="html">';
@@ -230,8 +231,8 @@
 				
 			case "clear" :
 			
-				$request['pass'] = $_REQUEST['admuips'];
-				if ($request['pass'] == $config->uipass) {
+				require_login();
+				if (isset($_REQUEST['admuips']) && $_REQUEST['admuips'] == $config->adminpass) {
 		
 					// check if this ip has recently submitted .. 
 					$query = 'DELETE FROM survey ';
@@ -242,14 +243,14 @@
 					$result['messages'][] = 'Database cleared.';
 					success();
 				} else {
-					if ($request['pass']) {
+					if (isset($_REQUEST['admuips'])) {
 						$result['messages'][] = 'Wrong pass';
 					}
 					if ($request['format']=='html') {
 						$result['html'] = '<form action="'.$_SERVER['PHP_SELF'].'" method="post">';
 						$result['html'] .= '<input type="hidden" name="action" value="clear">';
 						$result['html'] .= '<b>Doing this will permanently delete all submissions!</b>';
-						$result['html'] .= '<label>password:</label>';
+						$result['html'] .= '<label>admin password:</label>';
 						$result['html'] .= '<input type="password" name="admuips" value="">';
 						$result['html'] .= '<input type="submit"  value="Clear database">';
 						success();
@@ -290,19 +291,37 @@
 				$cols  = array('ip','bogus');
 				$vals = array($request['ip'],$request['bogus']);
 				foreach($survey->fields as $key=>$field) {
-					$request[$key] = $_REQUEST[$key];
-					array_push($cols,$field->column);
-					array_push($vals,$request[$key]);
+					if (isset($_REQUEST[$key])) {
+						if ($_REQUEST[$key]!=='') {
+							$request[$key] = $_REQUEST[$key];
+							array_push($cols,$field->column);
+							array_push($vals,$request[$key]);
+						} else {
+							$result['messages'][] = 'Ignoring empty field '.$key;
+						}
+					}
 				}
 				foreach($survey->categories as $key=>$cat) {
-					$request[$key] = $_REQUEST[$key];
-					array_push($cols,$cat->column);
-					array_push($vals,$request[$key]);
+					if (isset($_REQUEST[$key])) {
+						if ($_REQUEST[$key]!=='') {
+							$request[$key] = $_REQUEST[$key];
+							array_push($cols,$cat->column);
+							array_push($vals,$request[$key]);
+						} else {
+							$result['messages'][] = 'Ignoring empty cat '.$key;
+						}
+					}
 				}
 				foreach($survey->statements as $key=>$stat) {
-					$request[$key] = $_REQUEST[$key];
-					array_push($cols,$stat->column);
-					array_push($vals,$request[$key]);
+					if (isset($_REQUEST[$key])) {
+						if ($_REQUEST[$key]!=='') {
+							$request[$key] = $_REQUEST[$key];
+							array_push($cols,$stat->column);
+							array_push($vals,$request[$key]);
+						} else {
+							$result['messages'][] = 'Ignoring empty statement '.$key;
+						}
+					}
 				}
 				
 				$query = 'INSERT INTO survey ('.implode(',',$cols).') VALUES (';
@@ -318,6 +337,7 @@
 				break;
 	
 			case "results" :
+				require_login();
 				get_results();
 				
 				switch ($request['format']) {
@@ -439,7 +459,8 @@
 										$html .= '<th>Total: '.$cattotal.'</th>';
 										foreach ($cat->options as $val=>$label) {
 											$catopttotal = $survey->results['categories'][$ckey][$val]['total'];
-											$catoptpct = round($catopttotal/$cattotal*100);
+											if ($cattotal) $catoptpct = round($catopttotal/$cattotal*100);
+											else $catoptpct=0;
 											$html .= '<th colspan="'.($numpos).'">'.$catopttotal.' ('.$catoptpct.'%)</th>';
 										}
 									$html .= '</tr>';
@@ -500,6 +521,26 @@
 				
 		}
 	
+	}
+	
+	function require_login() {
+		global $config;
+		
+		$user = $_SERVER['PHP_AUTH_USER'];
+		$pass = $_SERVER['PHP_AUTH_PW'];
+		foreach ($config->users as $uname=>$upass) {
+			if ($user==$uname) {
+				if ($pass == $upass) {
+					return true;
+				}
+			}
+		}
+		
+		// you got here
+		header('WWW-Authenticate: Basic realm="Survey Engine"');
+		header('HTTP/1.0 401 Unauthorized');
+		die ("Not authorized");
+
 	}
 	
 	function get_results() {

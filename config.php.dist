@@ -15,7 +15,13 @@
 	$config->cors		= "*"; // Access-Control-Allow-Origin
 
 	// pass is required on some functions
-	$config->uipass		= 'xxxx';
+	$config->users		= array(
+		'xxxxx'		=> 'yyyy',
+		'zzzzz'		=> 'qqqq'
+	);
+	
+	// extra admin pass required for others
+	$config->adminpass	= 'xxxxx';
 	
 	date_default_timezone_set('GMT') 
 	
