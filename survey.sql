@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `survey`;
 CREATE TABLE `survey` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `bogus` boolean,
-  `ip` varchar(16) DEFAULT NULL,
+  `ip` char(32) DEFAULT NULL,
   `cdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `field01` varchar(255) DEFAULT NULL,
   `field02` varchar(255) DEFAULT NULL,

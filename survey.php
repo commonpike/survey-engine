@@ -264,7 +264,7 @@
 				
 			case "submit" :
 			
-				$request['ip']		= $_SERVER['REMOTE_ADDR'];
+				$request['ip']		= md5(getClientIP());
 				$request['now']		= time();
 		
 		
@@ -743,6 +743,16 @@
 		
 	}
 	
+	function getClientIP() {
+	
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+    $remote  = $_SERVER['REMOTE_ADDR'];
+    if(filter_var($client, FILTER_VALIDATE_IP))  return $client;
+    if(filter_var($forward, FILTER_VALIDATE_IP)) return $forward;
+    return $remote;
+
+	}
 	
 	function json_error() {
 		switch (json_last_error()) {
